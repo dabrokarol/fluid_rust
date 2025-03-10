@@ -1,6 +1,7 @@
 use simulation::ParticleSystem;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+use minifb::MouseButton;
 
 mod draw;
 mod particle;
@@ -17,10 +18,17 @@ fn main() {
 
     while window_handler.is_open() {
         let frame_start = Instant::now();
+        
+
+        let mouse_pos = window_handler.get_mouse_pos().unwrap_or((0.0, 0.0));
+        let mouse_pos: [f32; 2] = [mouse_pos.0, mouse_pos.1];
+
 
         for _ in 0..10 {
-            particle_system.update(1.0 / 600.0); // Assuming 60 FPS
+            particle_system.update(1.0 / 600.0, mouse_pos); // Assuming 60 FPS
         }
+
+        let update_duration = frame_start.elapsed();
 
         for particle in &particle_system.particles {
             let x = particle.position[0] as i32;
@@ -28,17 +36,13 @@ fn main() {
             let r = particle.radius;
             window_handler.draw_circle(x, y, r as i32, 0x39a1b1);
         }
-
-        // if let Some((x, y)) = window_handler.get_mouse_pos() {
-        //     if window_handler.get_mouse_down(MouseButton::Left) {
-        //         println!("Mouse clicked at ({}, {})", x, y);
-        //     }
-        // }
-
+        
         window_handler.update();
 
+
+
         let frame_duration = frame_start.elapsed();
-        println!("elapsed {:?}", frame_duration);
+        println!("updatex10 {:?} | drawing {:?}", update_duration,  frame_duration - update_duration);
         let target_duration = Duration::from_millis(16);
 
         if frame_duration < target_duration {

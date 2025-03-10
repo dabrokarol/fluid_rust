@@ -1,5 +1,6 @@
 use crate::{HEIGHT, WIDTH, particle::Particle, particle::RADIUS};
 use rand::Rng;
+use std::time::Instant;
 
 const GRID_SIZE: usize = 2 * RADIUS;
 pub struct ParticleSystem {
@@ -24,14 +25,17 @@ impl ParticleSystem {
             spawn_position: [WIDTH as f32 / 2.0, HEIGHT as f32 / 2.0 - 1.0],
             spawn_velocity: [0.0, 100.0],
             spawn_velocity_variance: 0.5,
-            gravity: [0.0, 1000.0],
+            gravity: [0.0, 100.0],
             particles_to_spawn_accumulator: 0.0,
             particle_counter: 0,
             grid: vec![vec![vec![]; HEIGHT / GRID_SIZE + 2]; WIDTH / GRID_SIZE + 2],
         }
     }
 
-    pub fn update(&mut self, delta_time: f32) {
+    pub fn update(&mut self, delta_time: f32, mouse_pos: [f32;2]) {
+
+        let start = Instant::now();
+
         self.particles_to_spawn_accumulator += self.spawn_rate * delta_time;
         let particles_to_spawn = self.particles_to_spawn_accumulator as usize;
         self.particles_to_spawn_accumulator -= particles_to_spawn as f32;
@@ -70,16 +74,33 @@ impl ParticleSystem {
                         &mut self.particles[id],
                         delta_time,
                         self.gravity,
+                        mouse_pos,
                     );
                 }
             }
         }
+
+        let duration = start.elapsed();
+        // println!("update function: {:?}", duration)
     }
 
-    fn handle_particle(p: &mut Particle, delta_time: f32, gravity: [f32; 2]) {
+    fn handle_particle(p: &mut Particle, delta_time: f32, gravity: [f32; 2], mouse_pos: [f32;2]) {
         p.force[0] += gravity[0];
         p.force[1] += gravity[1];
+        
+        let dist_vec = [
+            mouse_pos[0] - p.position[0],
+            mouse_pos[1] - p.position[1],
+        ];
+        let dist = dist_vec[0] * dist_vec[0] + dist_vec[1] * dist_vec[1]; 
+            
+        let force = [dist_vec[0] / dist * delta_time * 3000.0, dist_vec[1] / dist * delta_time * 3000.0];
+            
+        p.force[0] += force[0] * 100.0;
+        p.force[1] += force[1] * 100.0;
+            
         p.update(delta_time);
+
     }
 
     fn handle_particle_collisions(
@@ -99,11 +120,13 @@ impl ParticleSystem {
 
         let d = (particles[id1].radius + particles[id2].radius).pow(2) as f32;
 
+        let force = [dist_vec[0] / dist * d * delta_time * 3000.0, dist_vec[1] / dist * d * delta_time * 3000.0];
+        
         if dist < d {
-            particles[id2].force[0] += -dist_vec[0] / dist * d * 3000.0 * delta_time;
-            particles[id2].force[1] += -dist_vec[1] / dist * d * 3000.0 * delta_time;
-            particles[id1].force[0] += dist_vec[0] / dist * d * 3000.0 * delta_time;
-            particles[id1].force[1] += dist_vec[1] / dist * d * 3000.0 * delta_time;
+            particles[id2].force[0] += -force[0];
+            particles[id2].force[1] += -force[1];
+            particles[id1].force[0] += force[0];
+            particles[id1].force[1] += force[1];
         }
     }
 

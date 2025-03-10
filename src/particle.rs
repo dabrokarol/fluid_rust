@@ -1,6 +1,6 @@
 use crate::{HEIGHT, WIDTH};
 
-pub const RADIUS: usize = 5;
+pub const RADIUS: usize = 15;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Particle {
@@ -44,6 +44,6 @@ impl Particle {
         self.velocity[1] += self.force[1] * delta_time;
         self.position[0] += self.velocity[0] * delta_time;
         self.position[1] += self.velocity[1] * delta_time;
-        self.force = [0.0, 0.0] // force recalculated at each step
+        self.force = [0.0, 0.0]
     }
 }

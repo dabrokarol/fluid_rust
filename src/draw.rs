@@ -42,29 +42,24 @@ impl WindowHandler {
     pub fn draw_circle(&mut self, center_x: i32, center_y: i32, radius: i32, color: u32) {
         let mut x = radius;
         let mut y = 0;
-        let mut decision_over_2 = 1 - x;
+        let mut err = 0;
 
         while x >= y {
-            // Draw horizontal lines for each octant
-            self.draw_hline(center_x - x, center_x + x, center_y + y, color);
-            self.draw_hline(center_x - x, center_x + x, center_y - y, color);
-            self.draw_hline(center_x - y, center_x + y, center_y + x, color);
-            self.draw_hline(center_x - y, center_x + y, center_y - x, color);
+            self.draw_pixel(center_x + x, center_y + y, color);
+            self.draw_pixel(center_x + y, center_y + x, color);
+            self.draw_pixel(center_x - y, center_y + x, color);
+            self.draw_pixel(center_x - x, center_y + y, color);
+            self.draw_pixel(center_x - x, center_y - y, color);
+            self.draw_pixel(center_x - y, center_y - x, color);
+            self.draw_pixel(center_x + y, center_y - x, color);
+            self.draw_pixel(center_x + x, center_y - y, color);
 
             y += 1;
-
-            if decision_over_2 <= 0 {
-                decision_over_2 += 2 * y + 1;
-            } else {
+            err += 1 + 2 * y;
+            if 2 * (err - x) + 1 > 0 {
                 x -= 1;
-                decision_over_2 += 2 * (y - x) + 1;
+                err += 1 - 2 * x;
             }
-        }
-    }
-
-    fn draw_hline(&mut self, x1: i32, x2: i32, y: i32, color: u32) {
-        for x in x1..=x2 {
-            self.draw_pixel(x, y, color);
         }
     }
 
