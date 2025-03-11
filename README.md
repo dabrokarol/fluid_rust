@@ -1,4 +1,3 @@
-```markdown
 # Rust Fluid Simulation
 
 I'm going to create a fluid simulation in Rust using SPH (Smoothed Particle Hydrodynamics). This project is still in the making.
@@ -32,4 +31,3 @@ Matthias Müller, David Charypar and Markus Gross. 2003. Particle-based fluid si
 ## License
 
 This project is licensed under the GPL-3.0 license.
-```
