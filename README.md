@@ -25,6 +25,10 @@ cargo build --release
 cargo run --release
 ```
 
+## Acknowledgements
+Matthias Müller, David Charypar and Markus Gross. 2003. Particle-based fluid simulation for interactive applications.
+
+
 ## License
 
 This project is licensed under the GPL-3.0 license.
