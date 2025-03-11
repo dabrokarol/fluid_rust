@@ -7,14 +7,16 @@ mod draw;
 mod particle;
 mod simulation; // Import the draw module
 use draw::WindowHandler;
+mod sph;
+mod vector3d;
 
-const WIDTH: usize = 1500;
-const HEIGHT: usize = 600;
+const WIDTH_PX: usize = 1500;
+const HEIGHT_PX: usize = 600;
 
 fn main() {
     let mut particle_system = ParticleSystem::new(1500, 300.0);
 
-    let mut window_handler = WindowHandler::new("Particle Simulation", WIDTH, HEIGHT);
+    let mut window_handler = WindowHandler::new("Particle Simulation", WIDTH_PX, HEIGHT_PX);
 
     while window_handler.is_open() {
         let frame_start = Instant::now();

@@ -1,4 +1,4 @@
-use crate::{HEIGHT, WIDTH, particle::Particle, particle::RADIUS};
+use crate::{HEIGHT_PX, WIDTH_PX, particle::Particle, particle::RADIUS, sph::update_particles};
 use rand::Rng;
 use std::time::Instant;
 
@@ -22,13 +22,13 @@ impl ParticleSystem {
             particles: Vec::with_capacity(max_particles),
             spawn_rate,
             max_particles,
-            spawn_position: [WIDTH as f32 / 2.0, HEIGHT as f32 / 2.0 - 1.0],
+            spawn_position: [WIDTH_PX as f32 / 2.0, HEIGHT_PX as f32 / 2.0 - 1.0],
             spawn_velocity: [0.0, 100.0],
             spawn_velocity_variance: 0.5,
             gravity: [0.0, 100.0],
             particles_to_spawn_accumulator: 0.0,
             particle_counter: 0,
-            grid: vec![vec![vec![]; HEIGHT / GRID_SIZE + 2]; WIDTH / GRID_SIZE + 2],
+            grid: vec![vec![vec![]; HEIGHT_PX / GRID_SIZE + 2]; WIDTH_PX / GRID_SIZE + 2],
         }
     }
 
@@ -152,8 +152,8 @@ impl ParticleSystem {
     }
 
     fn grid_pos(x: f32, y: f32) -> (usize, usize) {
-        let xmax = WIDTH / RADIUS / 2;
-        let ymax = HEIGHT / RADIUS / 2;
+        let xmax = WIDTH_PX / RADIUS / 2;
+        let ymax = HEIGHT_PX / RADIUS / 2;
 
         let xpos: usize = (x / RADIUS as f32 / 2.0) as usize + 1;
         let ypos: usize = (y / RADIUS as f32 / 2.0) as usize + 1;
